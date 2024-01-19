@@ -2,7 +2,7 @@
   "name": "on-air-iot",
   "version": "0.1.0",
   "bin": {
-    "on-air-iot": "bin/on-air-iot.js"
+    "on-air-iot": "cdk/app.js"
   },
   "scripts": {
     "build": "tsc",
