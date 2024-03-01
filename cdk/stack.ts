@@ -1,19 +1,24 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import * as sns from 'aws-cdk-lib/aws-sns';
-import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
-import { Construct } from 'constructs';
+import { Stack, StackProps } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as apigateway from "aws-cdk-lib/aws-apigateway";
 
 export class OnAirIotStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const queue = new sqs.Queue(this, 'OnAirIotQueue', {
-      visibilityTimeout: Duration.seconds(300)
+    /**
+     * @endpoint
+     * [GET]
+     * /api/on-air      [online, offline]
+     */
+
+    const api = new apigateway.RestApi(this, "on-air-api", {
+      defaultMethodOptions: {
+        apiKeyRequired: true,
+      },
     });
 
-    const topic = new sns.Topic(this, 'OnAirIotTopic');
-
-    topic.addSubscription(new subs.SqsSubscription(queue));
+    const onAir = api.root.addResource("on-air");
+    onAir.addMethod("GET", new apigateway.LambdaIntegration());
   }
 }
